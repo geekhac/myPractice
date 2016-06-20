@@ -1,0 +1,12 @@
+/*h5样式的全局开发*/
+.h5{
+	height: 100%;
+}
+.h5_page{
+	position: relative;
+	height: 100%;
+	width: 100%;
+	background-color: #ddd;
+	background-size: 100%;
+	background-repeat: no-repeat;
+}

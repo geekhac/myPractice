@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1">
+	<title>测试h5ComponentPolyline 对象, 折线图组件</title>
+	<style type="text/css">
+		body{
+			margin:0;
+			padding: 0;
+			background-color: #000;
+			font-size: 12px;
+		}
+
+		.iphone{
+			width: 340px;
+		 	height: 540px;
+			background-color: #fff;
+			position: absolute;
+			left: 50%;
+			top:50%;
+			margin:-270px 0 0 -170px;
+		}
+		.h5_component_base{
+			transition: all 1s;
+		}
+		
+
+	</style>
+	<script type="text/javascript" src="../js/lib/jquery.js"></script>
+	<link rel="stylesheet" type="text/css" href="../css/h5ComponentBase.css">
+	<script type="text/javascript" src="../js/h5ComponentBase.js"></script>
+
+	<!-- 引入散点图资源 -->
+	<script type="text/javascript" src="../js/h5ComponentPolyline.js"></script>
+	<link rel="stylesheet" type="text/css" href="../css/h5ComponentPolyline.css">
+</head>
+<body>
+	<div class="iphone"></div>
+	<script type="text/javascript">
+		var cfg={
+			type:'polyline',
+			width:530,
+			height:600,
+			data:[
+				['js',.4,'#ff7676'],
+				['html5',.2],
+				['css3',.1],
+				['php',.2],
+				['jQuery',.35],
+			],
+			css:{
+				top:100,
+				opacity:0
+			},
+			animateIn:{
+				opacity:1
+			},
+			animateOut:{
+				opacity:0
+			},
+			center:true
+		}
+		var h5=new h5ComponentPolyline('h5ComponentPolyline',cfg); 
+		$('.iphone').append(h5);
+		var leave=true;
+		$('body').click(function() {
+			$('.h5_component').trigger(leave?'onLoad':'onLeave');
+			leave=!leave;
+		})
+	</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1">
+	<title>验证fullpage.js切换页面，以及内容组织结构可用，组件能够切换动画</title>
+	<style type="text/css">
+		body{
+			margin: 0;
+			padding: 0;
+		}
+		.component{
+			width: 50%;
+			height: 50px;
+			margin-bottom: 20px;
+			background-color: #eee;
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<div id="h5">
+		<div class="page section" id="page-1">
+			<div class="component logo">logo</div>
+			<div class="component slogan">slogan</div>
+		</div>
+		<div class="page section" id="page-2">
+			<div class="component desc">描述信息</div>
+			
+		</div>
+		<div class="page section" id="page-3">
+			<div class="component bar">柱状图</div>
+			
+		</div>
+	</div>
+	<script type="text/javascript" src="../js/lib/jquery.js"></script>
+	<script type="text/javascript" arc="../js/lib/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery.fullPage.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('#h5').fullpage({
+				'sectionsColor':['#384575','#543252','#829344'],
+				onLeave:function(index,nextIndex,direction) {
+					$('#h5').find('.page').eq(index-1).trigger('onLeave');
+
+				},
+				afterLoad:function(anchorLink,index) {
+					$('#h5').find('.page').eq(index-1).trigger('afterLoad');
+				}
+			});
+
+			$('.page').on('onLeave',function() {
+				console.log($(this).attr('id'),'===>','onLeave');
+				$(this).find('.component').trigger('onLeave');
+			})
+			$('.page').on('afterLoad',function() {
+				console.log($(this).attr('id'),'===>','afterLoad');
+				$(this).find('.component').trigger('afterLoad');
+			})
+			$('.component').on('onLeave',function() {
+				$('.component').fadeOut();
+				return false;
+			})
+			$('.component').on('afterLoad',function() {
+				$('.component').fadeIn();
+				return false;
+			})
+		});
+	</script>
+</body>
+</html>
