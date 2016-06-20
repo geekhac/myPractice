@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1">
+	<title>测试h5ComponentBaseRelativeTo 对象, 基本的图文组件(相对定位)</title>
+	<style type="text/css">
+		body{
+			margin:0;
+			padding: 0;
+			background-color: #000;
+			font-size: 12px;
+		}
+
+		.iphone{
+			width: 340px;
+			height: 540px;
+			background-color: #fff;
+			position: absolute;
+			left: 50%;
+			top:50%;
+			margin:-270px 0 0 -170px;
+		}
+		.h5_component_base{
+			transition: all 1s;
+		}
+		
+
+	</style>
+	<script type="text/javascript" src="../js/lib/jquery.js"></script>
+	<link rel="stylesheet" type="text/css" href="../css/h5ComponentBaseRelativeTo.css">
+	<script type="text/javascript" src="../js/h5ComponentBaseRelativeTo.js"></script>
+</head>
+<body>
+	<div class="iphone"></div>
+	<script type="text/javascript">
+		var cfg_base={
+			type:'src',
+			text:'原基本组件 height：100，top：100',
+			width:500,
+			height:100,
+			css:{
+				backgroundColor:'#eee',
+				top:'100px'
+				// left:'50px',
+				// bottom:0,
+				// opacity:0
+			},
+			// animateIn:{
+			// 	bottom:'80px',
+			// 	opacity:1
+			// },
+			// animateOut:{
+			// 	bottom:0,
+			// 	opacity:0
+			// },
+			center:true
+		}
+		// 追加原始基本组件
+		var h5_base=new h5ComponentBaseRelativeTo('src',cfg_base); 
+		$('.iphone').append(h5_base);
+
+		// 追加新增相对组件
+		var cfg_relative={
+			type:'relative',
+			text:'相对基本组件 height：100，top：100',
+			width:500,
+			height:100,
+			css:{
+				backgroundColor:'pink',
+				top:'100px'
+				// opacity:0
+			},
+			// animateIn:{
+			// 	opacity:1
+			// },
+			// animateOut:{
+			// 	opacity:0
+			// },
+			// center:true,
+			relativeTo:'src'
+		}
+		var h5_relative=new h5ComponentBaseRelativeTo("relative",cfg_relative);
+		$('.iphone').append(h5_relative);
+		var leave=true;
+		$('body').click(function() {
+			$('.h5_component').trigger(leave?'onLoad':'onLeave');
+			leave=!leave;
+		})
+	</script>
+</body>
+</html>
