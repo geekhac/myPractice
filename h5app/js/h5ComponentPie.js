@@ -112,8 +112,9 @@ var h5ComponentPie=function (name,cfg) {
 		ctxMas.fill();
 		ctxMas.stroke();
 		if(per>=1){
+			h5ComponentPie.resort(component.find('.text'));
 			component.find('.text').css('opacity',1);
-			 ctxMas.clearRect(0,0,w,h);
+			ctxMas.clearRect(0,0,w,h);
 		}
 	}
 
@@ -141,4 +142,47 @@ var h5ComponentPie=function (name,cfg) {
 		
 	})
 	return component;
+}
+
+h5ComponentPie.resort=function (list) {
+	//检测相交
+	var compare=function (domA,domB) {
+		//元素的offset,不用left，因为有时候left为auto
+		var offsetA=$(domA).offset();
+		var offsetB=$(domB).offset();
+		//domA的有影
+		var shadowA_x=[offsetA.left,$(domA).width()+offsetA.left];
+		var shadowA_y=[offsetA.top,$(domA).height()+offsetA.top];
+		//domB的有影
+		var shadowB_x=[offsetB.left,$(domB).width()+offsetB.left];
+		var shadowB_y=[offsetB.top,$(domB).height()+offsetB.top];
+
+		//检测x相交
+		var interset_x=(shadowA_x[0]>shadowB_x[0]&&shadowA_x[0]<shadowB_x[1])||(shadowA_x[1]>shadowB_x[0]&&shadowA_x[1]<shadowB_x[1])
+		//检测y相交
+		var interset_y=(shadowA_y[0]>shadowB_y[0]&&shadowA_y[0]<shadowB_y[1])||(shadowA_y[1]>shadowB_y[0]&&shadowA_y[1]<shadowB_y[1])
+
+		return interset_x&&interset_y;
+	}
+	//错开重拍
+	var reset=function (domA,domB) {
+		//这里只是简单的纵轴重排
+		// 考虑到元素可能没有设置top
+		if($(domA).css('top')!='auto'){
+			$(domA).css('top',parseInt($(domA).css('top'), 10)+$(domB).height());
+		}else{
+			$(domA).css('bottom',parseInt($(domA).css('bottom'), 10)+$(domB).height());
+		}
+	}
+	//这里重拍效果并不好，会导致文字躲进图片里，所以没有采用
+	// $.each(list,function (i,domTarget) {
+	// 	if(list[i+1]){
+	// 		if(compare(domTarget,list[i+1])){
+	// 			reset(domTarget,list[i+1]);
+	// 		}
+	// 	}
+	// })
+	// if(compare(list[list.length-1],list[0])){
+	// 	reset(list[list.length-1],list[0]);
+	// }
 }

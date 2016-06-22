@@ -1,4 +1,5 @@
 // 内容管理对象
+var jdata=[];
 var H5=function() {
 	this.id=('h5_'+Math.random()).replace('.','_');
 	this.el=$('<div class="h5" id="'+this.id+'">').hide();
@@ -12,13 +13,11 @@ var H5=function() {
 	 * @param {string} text 页面内的默认文本
 	 * @return ｛h5｝H5对象 ， 可以重复使用h5对象支持的方法 
 	 */
-	this.addPage=function (name,text) {
+	this.addPage=function (name) {
+		jdata.push({isPage:true,name:name});
 		var page=$('<div class="h5_page section">');
 		if (name!=undefined){
 			page.addClass('h5_page_'+name);
-		}
-		if(text!=undefined){
-			page.text(text);
 		}
 		this.el.append(page);
 		this.page.push(page); 
@@ -30,6 +29,7 @@ var H5=function() {
 
 	// 新增一个组件
 	this.addComponent=function(name,cfg) {
+		jdata.push({isPage:false,name:name,cfg:cfg});
 		var cfg=cfg||{};
 		cfg=$.extend({
 			type:'base'
@@ -72,17 +72,20 @@ var H5=function() {
 	this.loader=function(firstPage){
 		this.el.fullpage({
 			onLeave:function(index,nextIndex,direction) {
-					$(this).find('.h5_component').trigger('onLeave');
-				},
-				afterLoad:function(anchorLink,index) {
-					$(this).find('.h5_component').trigger('onLoad');
-				}
+				$(this).find('.h5_component').trigger('onLeave');
+
+			},
+			afterLoad:function(anchorLink,index) {
+				$(this).find('.h5_component').trigger('onLoad');
+				conaole.log($(this));
+			},
+			
 		}); 
 		this.el.show();
 		if(firstPage){
 			$.fn.fullpage.moveTo(firstPage);
 		}
 	}
-
+	this.loader = typeof h5_loading=='function' ? h5_loading : this.loader;
 	return this;
 }
