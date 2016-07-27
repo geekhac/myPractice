@@ -1,0 +1,14 @@
+{
+  "name": "imooc",
+  "version": "1.0.0",
+  "description": "movie site",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "imooc"
+  ],
+  "author": "geekhac",
+  "license": "ISC"
+}
