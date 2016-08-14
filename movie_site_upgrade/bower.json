@@ -1,0 +1,25 @@
+{
+  "name": "imooc",
+  "authors": [
+    "geekhac <956854217@qq.com>"
+  ],
+  "description": "movie site",
+  "main": "",
+  "keywords": [
+    "imooc"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/libs",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7"
+  }
+}
