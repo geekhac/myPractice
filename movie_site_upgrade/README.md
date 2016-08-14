@@ -15,30 +15,30 @@
 ### 详细说明
 
  1. grunt集成自动启动
-   文件有改动时，项目可以重新执行，使用了grunt-contrib-watch
-   实时监听入口文件，需要时自动重启项目，使用了grunt-contrib-nodemon
-   对于像sass、coffee等需要编译的慢任务进行优化，并行运行阻塞任务，使用了grunt-contrib-concurrent
+     文件有改动时，项目可以重新执行，使用了grunt-contrib-watch
+     实时监听入口文件，需要时自动重启项目，使用了grunt-contrib-nodemon
+     对于像sass、coffee等需要编译的慢任务进行优化，并行运行阻塞任务，使用了grunt-contrib-concurrent
 
  2. 开发用户的注册登录功能
-   对用户登录的密码进行了加密处理(加盐、hash)，使用了bcrypt 为了保持用户的登录状态，做了会话的持久化，使用了session
-   以中间件的方式给加入了用户权限设置，简化了开发。
+     对用户登录的密码进行了加密处理(加盐、hash)，使用了bcrypt 为了保持用户的登录状态，做了会话的持久化，使用了session
+     以中间件的方式给加入了用户权限设置，简化了开发。
 
  3. 开发评论功能
-   用户模型需要与评论模型嵌套级联，使用了mongoose的populate
+     用户模型需要与评论模型嵌套级联，使用了mongoose的populate
 
  4. 实现电影的分类功能
-   电影模型需要与分类模型嵌套级联，使用了mongoose的populate
-   借用豆瓣的api,读取电影数据
-   增加了分页功能
-   增加了电影的搜索功能，使用正则进行模糊匹配
+     电影模型需要与分类模型嵌套级联，使用了mongoose的populate
+     借用豆瓣的api,读取电影数据
+     增加了分页功能
+     增加了电影的搜索功能，使用正则进行模糊匹配
 
  5. 增强后台功能
-   回调的方式对电影海报进行写读的操作，使用了fs模块和丰富表单上传内容的multiparty中间件
-   增加了访客的pv统计，使用了mongo数据库的inc增加pv
+     回调的方式对电影海报进行写读的操作，使用了fs模块和丰富表单上传内容的multiparty中间件
+     增加了访客的pv统计，使用了mongo数据库的inc增加pv
 
  6. 增加单元测试
-   编写用户用力，进行测试，使用了mocha、should
+     编写用户用力，进行测试，使用了mocha、should
 
  7. grunt集成服务
-   程序的代码校验，使用了jshint
-   代码的压缩，使用了uglify
+     程序的代码校验，使用了jshint
+     代码的压缩，使用了uglify
