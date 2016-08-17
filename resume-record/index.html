@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>resumeRCD</title>
+	<script src="public/libs/react-0.14.0.js"></script>
+	<script src="public/libs/react-dom-0.14.0.js"></script>
+	<script src="public/libs/browser.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<div id="records">
+	</div>
+	<script type="text/babel">
+		var Record=React.createClass({
+			//一个item代表一个公司，items代表公司集合
+			//每个公司的应聘状态都有	company（公司）、deliver（投递）、screen（初筛）、written（笔试）、initInter（初试）、retrial（复试）、hrInter（hr面）、offer，几个阶段
+			//公司箩筐主要是对company和deliver这两个属性操作，记录我感兴趣的公司的投递状态
+			//简历状态主要对其余6个属性进行操作，详细记录每个公司的简历流程
+			getInitialState: function() {
+		    return {
+		    	item:{
+		    		company:'请添加公司',
+		    		deliver:'未投递',
+		    		screen:'no',
+						written:'no',
+						initInter:'no',
+						retrial:'no',
+						hrInter:'no',
+						offer:'no'
+		    	},
+		    	items:[]
+		    };
+		  },
+		  //添加公司的操作
+		  handleClick: function(event) {
+		  	var that=this;
+		  	var idx=-1;
+		  	//判断公司是否已添加
+		  	this.state.items.map(function(item,index){
+		  		if(item.company===that.state.item.company){
+		  			idx=index;
+		  		}
+		  	});
+		  	//公司还未添加
+		  	if(idx===-1){
+		  		this.setState({
+		  			items: this.state.items.concat(this.state.item),
+		  		});
+		  	}else {//公司已添加
+		  		this.state.items[idx]=this.state.item;
+		  		this.setState({
+		  			items: this.state.items
+		  		});
+		  	}
+		  },
+		  //公司填入框更改时更新item的company属性
+		  cpnChange:function (event) {
+		  	var value = event.target.value;
+    		this.setState( {item:Object.assign({},this.state.item,{ company: value })} )
+		  },
+		   //投递填入框更改时更新item的deliver属性
+		  deliverChange:function (event) {
+		   	var value = event.target.value;
+   			this.setState( {item:Object.assign({},this.state.item,{ deliver: value })} )
+		  },
+		  //简历状态更新函数 根据参数修改 item的属性
+		  setStatus:function (idx,value,clear) {
+		  	//简历状态清空时
+		  	if(clear){
+		  		this.setState( {item:Object.assign({},this.state.item,{'screen':'no' })} );
+		  		this.setState( {item:Object.assign({},this.state.item,{'written':'no' })} );
+		  		this.setState( {item:Object.assign({},this.state.item,{'initInter':'no' })} );
+		  		this.setState( {item:Object.assign({},this.state.item,{'retrial':'no' })} );
+		  		this.setState( {item:Object.assign({},this.state.item,{'hrInter':'no' })} );
+		  		this.setState( {item:Object.assign({},this.state.item,{'offer':'no' })} );
+		  	}else{//在idx对应的阶段之前的阶段状态都应为‘yes’,之后的阶段状态都应为‘no’,idx对应阶段的状态根据参数而设定，
+					switch(idx){
+						case 1:
+							this.setState( {item:Object.assign({},this.state.item,{
+								'screen':value,
+								'written':'no',
+								'initInter':'no',
+								'retrial':'no',
+								'hrInter':'no',
+								'offer':'no'
+							})});
+							break;
+						case 2:
+							this.setState( {item:Object.assign({},this.state.item,{
+								'screen':'yes',
+								'written':value,
+								'initInter':'no',
+								'retrial':'no',
+								'hrInter':'no',
+								'offer':'no'
+							})});
+							break;
+						case 3:
+							this.setState( {item:Object.assign({},this.state.item,{
+								'screen':'yes',
+								'written':'yes',
+								'initInter':value,
+								'retrial':'no',
+								'hrInter':'no',
+								'offer':'no'
+							})});
+							break;
+						case 4:
+							this.setState( {item:Object.assign({},this.state.item,{
+								'screen':'yes',
+								'written':'yes',
+								'initInter':'yes',
+								'retrial':value,
+								'hrInter':'no',
+								'offer':'no'
+							})});
+							break;
+						case 5:
+							this.setState( {item:Object.assign({},this.state.item,{
+								'screen':'yes',
+								'written':'yes',
+								'initInter':'yes',
+								'retrial':'yes',
+								'hrInter':value,
+								'offer':'no'
+							})});
+							break;
+						case 6:
+							this.setState( {item:Object.assign({},this.state.item,{
+								'screen':'yes',
+								'written':'yes',
+								'initInter':'yes',
+								'retrial':'yes',
+								'hrInter':'yes',
+								'offer':value
+							})});
+					}
+		  	}
+		  },
+		  //简历状态表通过点击更新状态，状态变更时更新item进而更新items
+		  statusChange:function (event) {
+		  	var tar=event.target;
+		  	//获得被修改状态简历的目标阶段(idx和阶段对应，例如idx=1 对应初筛阶段)和应有状态（eg：之前初筛为no，点击后状态变为yes）
+		  	var res=function () {
+		  		var res={
+		  			idx:0,
+		  			value:'no'
+		  		}
+		  		for(var i=1;i<tar.parentNode.childNodes.length;i++){
+		  			if(tar===tar.parentNode.childNodes[i]){
+		  				res.idx=i;
+		  				if(tar.innerHTML=='no'){
+		  					res.value='yes';
+		  				}else{
+		  					res.value='no';
+		  				}
+		  			}
+		  		}
+		  		return res;
+		  	}();
+		  	//调用简历状态更新函数 根据参数修改 item的属性
+		  	this.setStatus(res.idx,res.value,false);
+		  	//在items中将被选中公司的item更新
+		  	var idx=-1;
+		  	this.state.items.map(function (item,index){
+		  		if(item.company==tar.parentNode.childNodes[0].innerHTML){
+		  			idx=index;
+		  		}
+		  	})
+		  	this.state.items[idx]=this.state.item;
+	  		this.setState({
+	  			items: this.state.items
+	  		});
+		  },
+		  render: function() {
+		  	var company=this.state.item.company;
+		  	var that=this;
+		    return (
+		    	<div>
+			    	<div id='companies'>
+				      <input type="text" value={company} ref="cpnInput" onChange={this.cpnChange}/>
+				      <select onChange={this.deliverChange}>  
+							  <option value="未投递">未投递</option>  
+							  <option value="已投递">已投递</option>  
+							  <option value="已挂掉">已挂掉</option>  
+							  <option value="offer">offer</option>  
+							</select> 
+		        	<input type="button" value="添加公司" onClick={this.handleClick} />
+		        	<ul>
+			        	{
+						     	this.state.items.map(function (item,index) {
+						     		return<li key={index}>{item.company}  <span>{item.deliver}</span></li>
+						     	})
+					     	}
+				     	</ul>
+				     </div>
+				     <div id="status">
+				    	<table>
+				    		<thead>
+					    		<tr>
+					    			<td>公司</td>
+					    			<td>初筛</td>
+					    			<td>笔试</td>
+					    			<td>初试</td>
+					    			<td>复试</td>
+					    			<td>hr面试</td>
+					    			<td>offer</td>
+					    		</tr>
+					      </thead>
+				    		<tbody>
+				        	{
+							     	this.state.items.map(function (item,index) {
+							     		//将已投递的公司在简历状态表中展示简历状态
+							     		if(item.deliver==='已投递'){
+							     			return<tr key={index} onClick={that.statusChange}>
+							     				<td>{item.company}</td>
+							     				<td style={{className:item.screen}}>{item.screen}</td>
+							     				<td style={{className:item.written}}>{item.written}</td>
+							     				<td style={{className:item.initInter}}>{item.initInter}</td>
+							     				<td style={{className:item.retrial}}>{item.retrial}</td>
+							     				<td style={{className:item.hrInter}}>{item.hrInter}</td>
+							     				<td style={{className:item.offer}}>{item.offer}</td>
+							     			</tr>
+							     		}
+							     	})
+						     	}
+					     	</tbody>
+				    		
+				    	</table>
+				     </div>
+				   </div>
+		    );
+		  }
+		});
+		ReactDOM.render(
+		<Record />,
+		document.getElementById('records')
+		);
+	</script>
+</body>
+</html>
