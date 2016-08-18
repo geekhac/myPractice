@@ -7,7 +7,8 @@
 --用node和mongodb数据库实现了简单的电影站点
 ### movie_upgrade
 --对movie_site进行了升级，增加了用户授权、电影分类分页和搜索、后台统计、测试、等丰富的功能
-
+### resume-record
+--基于React的简历小管家
 
 
 
