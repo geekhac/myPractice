@@ -5,6 +5,7 @@
 	<script src="public/libs/react-0.14.0.js"></script>
 	<script src="public/libs/react-dom-0.14.0.js"></script>
 	<script src="public/libs/browser.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 	<div id="records">
@@ -133,8 +134,11 @@
 			addCompany:function () {
 				var company=this.refs.cpnInput.value.trim();
 				var deliver=this.refs.dlvInput.value.trim();
-				this.props.onCompanySubmit({name: company, deliver: deliver});
-
+				if(company!=''){
+					this.props.onCompanySubmit({name: company, deliver: deliver});
+				}
+				this.refs.cpnInput.value='';
+				this.refs.dlvInput.value='未投递';
 			},
 			render: function() {
 				return (
