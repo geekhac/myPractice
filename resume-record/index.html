@@ -1,222 +1,265 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>resumeRCD</title>
-	<script src="public/libs/react-0.14.0.js"></script>
-	<script src="public/libs/react-dom-0.14.0.js"></script>
-	<script src="public/libs/browser.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="style.css">
+  <title>resumeRCD</title>
+  <script src="public/libs/react-0.14.0.js"></script>
+  <script src="public/libs/react-dom-0.14.0.js"></script>
+  <script src="public/libs/browser.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-	<div id="records">
-	</div>
-	<script type="text/babel">
-		var Record=React.createClass({
-			getInitialState: function() {
-				return {
-					company:[]
-				};
-			},
-			onCompanySubmit:function (company) {
-				var newCompany={
-					name:company.name,
-		    		deliver:company.deliver,
-		    		screen:'no',
-					written:'no',
-					initInter:'no',
-					retrial:'no',
-					hrInter:'no',
-					offer:'no'
-				}
-				var index=-1;
-				this.state.company.map(function (item,idx) {
-					if(item.name===company.name){
-						index=idx;
-					}
-				})
-				//如果公司还没被添加，则添加
-				if(index===-1){
-					var companies=this.state.company.concat([newCompany]);
-					this.setState({
-					  company: companies,
-					});
-				}else{
-					this.state.company[index]=newCompany;
-					this.setState({
-					  company: this.state.company
-					});
-				}
-			},
-			onStatusSubmit:function (result) {
-				var newCompany={
-					name:result.name,
-		    		deliver:'已投递',
-		    		screen:'no',
-					written:'no',
-					initInter:'no',
-					retrial:'no',
-					hrInter:'no',
-					offer:'no'
-				}
-				var status=result.status;
-				switch(result.step){
-					case 1:
-						newCompany.screen=status;
-						break;
-					case 2:
-						newCompany.screen='yes';
-						newCompany.written=status;
-						break;
-					case 3:
-						newCompany.screen='yes';
-						newCompany.written='yes';
-						newCompany.initInter=status;
-						break;
-					case 4:
-						newCompany.screen='yes';
-						newCompany.written='yes';
-						newCompany.initInter='yes';
-						newCompany.retrial=status;
-						break;
-					case 5:
-						newCompany.screen='yes';
-						newCompany.written='yes';
-						newCompany.initInter='yes';
-						newCompany.retrial='yes';
-						newCompany.hrInter=status;
-						break;
-					case 6:
-						newCompany.screen='yes';
-						newCompany.written='yes';
-						newCompany.initInter='yes';
-						newCompany.retrial='yes';
-						newCompany.hrInter='yes';
-						newCompany.offer=status;
-				}
-				var index=-1;
-				this.state.company.map(function (item,idx) {
-					if(item.name===result.name){
-						index=idx;
-					}
-				})
-				this.state.company[index]=newCompany;
-				this.setState({
-				  company: this.state.company
-				});
-			},
-			render: function() {
-		      return (
-		        <div className="record">
-		          <h1>简历小管家</h1>
-		          <CompanyInp onCompanySubmit={this.onCompanySubmit} />
-		          <CompanySet companySet={this.state.company}/>
-		          <Status data={this.state.company} onStatusSubmit={this.onStatusSubmit}/>
-		        </div>
-		      );
-		    }
-		});
-		var CompanySet=React.createClass({
-			render: function() {
-				return (
-					<div className="companySet">
-						<ul>
-						{
-							this.props.companySet.map(function (company,index) {
-								return<li key={index}>{company.name} <span>{company.deliver}</span></li>
-							})
-						}
-						</ul>
-					</div>
-				);
-			}
-		});
-		var CompanyInp=React.createClass({
-			addCompany:function () {
-				var company=this.refs.cpnInput.value.trim();
-				var deliver=this.refs.dlvInput.value.trim();
-				if(company!=''){
-					this.props.onCompanySubmit({name: company, deliver: deliver});
-				}
-				this.refs.cpnInput.value='';
-				this.refs.dlvInput.value='未投递';
-			},
-			render: function() {
-				return (
-					<div className="companyInp">
-						<input type="text" ref="cpnInput" placeholder="请选择公司"/>
-				      	<select ref="dlvInput">  
-							<option value="未投递">未投递</option>  
-							<option value="已投递">已投递</option>  
-							<option value="已挂掉">已挂掉</option>  
-							<option value="offer">offer</option>  
-						</select> 
-		        		<input type="button" value="添加公司" onClick={this.addCompany}/>
-					</div>
-				);
-			}
-		});
-		var Status=React.createClass({
-			onStatusChange:function (event) {
-				var tar=event.target;
-				var result={
-					name:tar.parentNode.childNodes[0].innerHTML,
-					step:1,
-					status:'no'
-				}
-				if(tar.innerHTML==='no'){
-					result.status='yes';
-				}else{
-					result.status='no';
-				}
-				for(var i=1;i<tar.parentNode.childNodes.length;i++){
-					if(tar===tar.parentNode.childNodes[i]){
-						result.step=i;
-					}
-				}
-				this.props.onStatusSubmit(result);
-			},
-			render: function() {
-				return (
-					<div className="status">
-						<table>
-				    		<thead>
-					    		<tr>
-					    			<td>公司</td>
-					    			<td>初筛</td>
-					    			<td>笔试</td>
-					    			<td>初试</td>
-					    			<td>复试</td>
-					    			<td>hr面试</td>
-					    			<td>offer</td>
-					    		</tr>
-					     	</thead>
-					    	<tbody onClick={this.onStatusChange}>
-					        	{
-					        		this.props.data.map(function (company,index) {
-					        			if(company.deliver==='已投递'){
-					        				return<tr key={index}>
-								    			<td>{company.name}</td>
-								    			<td>{company.screen}</td>
-								    			<td>{company.written}</td>
-								    			<td>{company.initInter}</td>
-								    			<td>{company.retrial}</td>
-								    			<td>{company.hrInter}</td>
-								    			<td>{company.offer}</td>
-								    		</tr>
-					        			}
-					        		})
-					        	}
-						    </tbody>
-				    	</table>
-					</div>
-				);
-			}
-		})
-
-		ReactDOM.render(
-		<Record />,
-		document.getElementById('records')
-		);
-	</script>
+  <div id="records">
+  </div>
+  <script type="text/babel">
+  //开启浏览器调试
+  if (typeof window !== 'undefined') {
+    window.React = React;
+  }
+    var Record=React.createClass({
+      getInitialState: function() {
+        return {
+          company:[],
+          search:{
+            company:'',
+            deliver:''
+          }
+        };
+      },
+      //添加公司
+      onCompanySubmit:function (company) {
+        var newCompany={
+          name:company.name,
+          deliver:company.deliver,
+          screen:'no',
+          written:'no',
+          initInter:'no',
+          retrial:'no',
+          hrInter:'no',
+          offer:'no'
+        }
+        var index=-1;
+        this.state.company.map(function (item,idx) {
+          if(item.name===company.name){
+            index=idx;
+          }
+        })
+        //如果公司还没被添加，则添加
+        if(index===-1){
+          var companies=this.state.company.concat([newCompany]);
+          this.setState({
+            company: companies,
+          });
+        }else{
+          this.state.company[index]=newCompany;
+          this.setState({
+            company: this.state.company
+          });
+        }
+      },
+      //简历状态改变
+      onStatusSubmit:function (result) {
+        var newCompany={
+          name:result.name,
+          deliver:'已投递',
+          screen:'no',
+          written:'no',
+          initInter:'no',
+          retrial:'no',
+          hrInter:'no',
+          offer:'no'
+        }
+        var status=result.status;
+        switch(result.step){
+          case 1:
+            newCompany.screen=status;
+            break;
+          case 2:
+            newCompany.screen='yes';
+            newCompany.written=status;
+            break;
+          case 3:
+            newCompany.screen='yes';
+            newCompany.written='yes';
+            newCompany.initInter=status;
+            break;
+          case 4:
+            newCompany.screen='yes';
+            newCompany.written='yes';
+            newCompany.initInter='yes';
+            newCompany.retrial=status;
+            break;
+          case 5:
+            newCompany.screen='yes';
+            newCompany.written='yes';
+            newCompany.initInter='yes';
+            newCompany.retrial='yes';
+            newCompany.hrInter=status;
+            break;
+          case 6:
+            newCompany.screen='yes';
+            newCompany.written='yes';
+            newCompany.initInter='yes';
+            newCompany.retrial='yes';
+            newCompany.hrInter='yes';
+            newCompany.offer=status;
+        }
+        var index=-1;
+        this.state.company.map(function (item,idx) {
+          if(item.name===result.name){
+            index=idx;
+          }
+        })
+        this.state.company[index]=newCompany;
+        this.setState({
+          company: this.state.company
+        });
+      },
+      //搜索公司
+      onCompanySearch:function (result) {
+        this.setState({
+          search:{
+            company:result.name,
+            deliver:result.deliver
+          }
+        });
+      },
+      render: function() {
+          return (
+            <div className="record">
+              <h1>简历小管家</h1>
+              <CompanyInp onCompanySubmit={this.onCompanySubmit} onCompanySearch={this.onCompanySearch} />
+              <CompanySet companySet={this.state.company} search={this.state.search} />
+              <Status data={this.state.company} search={this.state.search} onStatusSubmit={this.onStatusSubmit}  />
+            </div>
+          );
+        }
+    });
+    //公司箩筐列表
+    var CompanySet=React.createClass({
+      render: function() {
+        var rows=[];
+        var that=this;
+        this.props.companySet.forEach( function(company, index) {
+          if(company.name.indexOf(that.props.search.company)!==-1&&company.deliver.indexOf(that.props.search.deliver)!==-1){
+            rows.push(<CompanySetRaw company={company} key={company.name} />);
+          }
+        });
+        return (
+          <div className="companySet">
+            <ul>{rows}</ul>
+          </div>
+        );
+      }
+    });
+    //公司箩筐列表项
+    var CompanySetRaw=React.createClass({
+      render: function() {
+        return (
+          <li>{this.props.company.name} <span>{this.props.company.deliver}</span></li>
+        );
+      }
+    });
+    //搜索框
+    var CompanyInp=React.createClass({
+      addCompany:function () {
+        var company=this.refs.cpnInput.value.trim();
+        var deliver=this.refs.dlvInput.value.trim();
+        if(company!=''){
+          this.props.onCompanySubmit({name: company, deliver: deliver});
+        }
+        this.refs.cpnInput.value='';
+        this.refs.dlvInput.value='未投递';
+      },
+      searchCompany:function () {
+        var company=this.refs.cpnInput.value.trim();
+        var deliver=this.refs.dlvInput.value.trim();
+        this.props.onCompanySearch({name: company, deliver: deliver});
+      },
+      render: function() {
+        return (
+          <div className="companyInp">
+            <input type="text" ref="cpnInput" placeholder="公司名称"/>
+            <select ref="dlvInput">
+              <option value="未投递">未投递</option>
+              <option value="已投递">已投递</option>
+              <option value="已挂掉">已挂掉</option>
+              <option value="offer">offer</option>
+            </select>
+            <input type="button" value="添加公司" onClick={this.addCompany}/>
+            <input type="button" value="搜索公司" onClick={this.searchCompany}/>
+          </div>
+        );
+      }
+    });
+    //简历状态表
+    var Status=React.createClass({
+      onStatusChange:function (event) {
+        var tar=event.target;
+        var result={
+          name:tar.parentNode.childNodes[0].innerHTML,
+          step:1,
+          status:'no'
+        }
+        if(tar.innerHTML==='no'){
+          result.status='yes';
+        }else{
+          result.status='no';
+        }
+        for(var i=1;i<tar.parentNode.childNodes.length;i++){
+          if(tar===tar.parentNode.childNodes[i]){
+            result.step=i;
+          }
+        }
+        this.props.onStatusSubmit(result);
+      },
+      render: function() {
+        var rows=[];
+        var that=this;
+        this.props.data.forEach( function(company, index) {
+          if(company.deliver==='已投递'&&company.name.indexOf(that.props.search.company)!==-1){
+            rows.push(<StatusRaw company={company} key={company.name} />);
+          }
+        });
+        return (
+          <div className="status">
+            <table>
+                <thead>
+                  <tr>
+                    <td>已投递公司</td>
+                    <td>初筛</td>
+                    <td>笔试</td>
+                    <td>初试</td>
+                    <td>复试</td>
+                    <td>hr面试</td>
+                    <td>offer</td>
+                  </tr>
+                </thead>
+                <tbody onClick={this.onStatusChange}>{rows}</tbody>
+              </table>
+          </div>
+        );
+      }
+    })
+    //简历状态表项
+    var StatusRaw=React.createClass({
+      render: function() {
+        return (
+          <tr>
+            <td>{this.props.company.name}</td>
+            <td>{this.props.company.screen}</td>
+            <td>{this.props.company.written}</td>
+            <td>{this.props.company.initInter}</td>
+            <td>{this.props.company.retrial}</td>
+            <td>{this.props.company.hrInter}</td>
+            <td>{this.props.company.offer}</td>
+          </tr>
+        );
+      }
+    })
+    ReactDOM.render(
+    <Record />,
+    document.getElementById('records')
+    );
+  </script>
 </body>
 </html>
