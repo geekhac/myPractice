@@ -5,13 +5,12 @@
   <script src="public/libs/react-0.14.0.js"></script>
   <script src="public/libs/react-dom-0.14.0.js"></script>
   <script src="public/libs/browser.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
   <div id="records">
   </div>
   <script type="text/babel">
-  //开启浏览器调试
+  {/*开启浏览器调试*/}
   if (typeof window !== 'undefined') {
     window.React = React;
   }
@@ -25,7 +24,7 @@
           }
         };
       },
-      //添加公司
+      /*添加公司*/
       onCompanySubmit:function (company) {
         var newCompany={
           name:company.name,
@@ -43,7 +42,7 @@
             index=idx;
           }
         })
-        //如果公司还没被添加，则添加
+        {/*如果公司还没被添加，则添加*/}
         if(index===-1){
           var companies=this.state.company.concat([newCompany]);
           this.setState({
@@ -56,7 +55,7 @@
           });
         }
       },
-      //简历状态改变
+      /*简历状态改变*/
       onStatusSubmit:function (result) {
         var newCompany={
           name:result.name,
@@ -114,7 +113,7 @@
           company: this.state.company
         });
       },
-      //搜索公司
+      /*搜索公司*/
       onCompanySearch:function (result) {
         this.setState({
           search:{
@@ -134,7 +133,7 @@
           );
         }
     });
-    //公司箩筐列表
+    {/*公司箩筐列表*/}
     var CompanySet=React.createClass({
       render: function() {
         var rows=[];
@@ -151,7 +150,7 @@
         );
       }
     });
-    //公司箩筐列表项
+    {/*公司箩筐列表项*/}
     var CompanySetRaw=React.createClass({
       render: function() {
         return (
@@ -159,7 +158,7 @@
         );
       }
     });
-    //搜索框
+    {/*搜索框*/}
     var CompanyInp=React.createClass({
       addCompany:function () {
         var company=this.refs.cpnInput.value.trim();
@@ -191,7 +190,7 @@
         );
       }
     });
-    //简历状态表
+    {/*简历状态表*/}
     var Status=React.createClass({
       onStatusChange:function (event) {
         var tar=event.target;
@@ -240,7 +239,7 @@
         );
       }
     })
-    //简历状态表项
+    {/*简历状态表项*/}
     var StatusRaw=React.createClass({
       render: function() {
         return (
