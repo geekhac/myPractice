@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello React!</title>
+ <!--    <script src="http://facebook.github.io/react/js/react.js"></script>
+    <script src="http://facebook.github.io/react/js/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script> -->
+    <script src="./build/react.js"></script>
+    <script src="./build/react-dom.js"></script>
+    <script src="./build/babel-browser.js"></script>
+    <link rel="stylesheet" href="./css/base.css">
+    <link rel="stylesheet" href="./css/app.css">
+  </head>
+ <body class="lean-bar">
+    <section id="AppRoot" class="todoapp"></section>
+     <footer class="info">
+      <p>Double-click to edit a todo</p>
+      <p>Created by <a href="https://github.com/geekhac">geekhac</a></p>
+      <p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+    </footer>
+    <script type="text/babel">
+var TodoList = React.createClass({
+  getInitialState: function() {
+      return {
+        todos: [{
+            completed: false,
+            title: 'finish exercise'
+        }, {
+            completed: false,
+            title: 'lean jsx'
+        }, {
+            completed: true,
+            title: 'lean react'
+        }],
+        status:{
+          completed:true,
+          active:true
+        }
+    };
+  },
+  addTodoSubmit:function (newTodo) {
+    this.setState({
+      todos:this.state.todos.concat(newTodo)
+    });
+  },
+  changeStatusSubmit:function (status) {
+    switch (status) {
+      case 'all':
+        this.setState({
+          status: {
+            completed:true,
+            active:true
+          }
+        });
+        break;
+      case 'active':
+        this.setState({
+          status: {
+            completed:false,
+            active:true
+          }
+        });
+        break;
+      case 'completed':
+        this.setState({
+          status: {
+            completed:true,
+            active:false
+          }
+        });
+        break;
+      case 'clear':
+        var that=this;
+        this.state.todos.forEach( function(todo, index) {
+          if(todo.completed){
+            delete that.state.todos[index];
+          }
+        });
+        this.setState({
+          todos: this.state.todos,
+        });
+        break;
+      default:
+        break;
+    }
+  },
+  changeItemSubmit:function (todo) {
+    this.state.todos.map(function (item) {
+      if(item===todo){
+        if(todo.completed){
+          todo.completed=false;
+        }else{
+          todo.completed=true
+        }
+      }
+    })
+    this.setState({
+      todos:this.state.todos ,
+    });
+  },
+  deleteTodoSubmit:function (todo) {
+    var that=this;
+    this.state.todos.map(function (item,idx) {
+      if(item===todo){
+        delete that.state.todos[idx];
+      }
+    })
+    this.setState({
+      todos:this.state.todos ,
+    });
+  },
+  toggleChangeSubmit:function (checked) {
+    if(checked){
+      this.state.todos.map(function(todo,idx){
+        todo.completed=true;
+      })
+    }else{
+      this.state.todos.map(function(todo,idx){
+        todo.completed=false;
+      })
+    }
+    this.setState({
+      todos: this.state.todos,
+    });
+  },
+  changeEditSubmit:function (edit) {
+    var that=this;
+    this.state.todos.map(function (todo,idx) {
+      if(todo===edit.todo){
+        that.state.todos[idx].title=edit.title;
+      }
+    })
+    this.setState({
+      todos: this.state.todos
+    });
+  },
+  render: function() {
+    var lefted = this.state.todos.reduce(function(acc, todo) {
+        return todo.completed ? acc : acc + 1;
+    }, 0);
+    return (
+      <div>
+        <TodoHeader addTodoSubmit={this.addTodoSubmit}/>
+        <TodoSection todos={this.state.todos} status={this.state.status} changeItemSubmit={this.changeItemSubmit} deleteTodoSubmit={this.deleteTodoSubmit} toggleChangeSubmit={this.toggleChangeSubmit} changeEditSubmit={this.changeEditSubmit} />
+        <TodoFooter lefted={lefted} changeStatus={this.changeStatusSubmit}/>
+      </div>
+    );
+  }
+});
+var TodoHeader=React.createClass({
+  addTodo:function (event) {
+    if(event.keyCode===13){
+       var newTodo={
+        completed:false,
+        title:event.target.value
+      };
+      this.props.addTodoSubmit(newTodo);
+      event.target.value="";
+    }
+  },
+  render: function() {
+    return(
+      <header className="header">
+        <h1> todos </h1>
+        <input className="new-todo" placeholder="What needs to be done?" onKeyUp={this.addTodo}/>
+      </header>
+    );
+  }
+})
+var TodoSection=React.createClass({
+  changeItemSubmit:function (todo) {
+    this.props.changeItemSubmit(todo);
+  },
+  deleteTodoSubmit:function (todo) {
+    this.props.deleteTodoSubmit(todo);
+  },
+  toggleChange:function (e) {
+    this.props.toggleChangeSubmit(e.target.checked);
+  },
+  changeEditSubmit:function (edit) {
+    this.props.changeEditSubmit(edit);
+  },
+  render: function() {
+    var status=this.props.status;
+    var changeItemSubmit=this.changeItemSubmit;
+    var deleteTodoSubmit=this.deleteTodoSubmit;
+    var changeEditSubmit=this.changeEditSubmit;
+    return(
+      <section className="main">
+        <input className="toggle-all" type="checkbox" onClick={this.toggleChange}/>
+        <ul className="todo-list">
+            {this.props.todos.map(function(todo, i) {
+              if(!todo.completed&&status.active){
+                return <TodoItem key={i} complete={false} todo={todo} changeItemSubmit={changeItemSubmit} deleteTodoSubmit={deleteTodoSubmit} changeEditSubmit={changeEditSubmit}/>;
+              }else if(todo.completed&&status.completed){
+                return <TodoItem key={i} complete={true} todo={todo} changeItemSubmit={changeItemSubmit} deleteTodoSubmit={deleteTodoSubmit} changeEditSubmit={changeEditSubmit}/>;
+              }else{
+                return;
+              }
+            })}
+        </ul>
+      </section>
+    );
+  }
+});
+var TodoItem=React.createClass({
+  changeItem:function (e) {
+    this.props.changeItemSubmit((this.props.todo));
+  },
+  deleteTodo:function (e) {
+    this.props.deleteTodoSubmit((this.props.todo));
+  },
+  edit:function (e) {
+    this.refs.view.style.display="none";
+    this.refs.edit.style.display="block";
+    this.refs.edit.focus();
+  },
+  changeEdit:function (e) {
+    var that=this;
+    if(e.keyCode===13){
+      that.refs.view.style.display="block";
+      that.refs.edit.style.display="none";
+      var edit={
+        todo:this.props.todo,
+        title:this.refs.edit.value
+      };
+      this.props.changeEditSubmit(edit);
+    }
+  },
+  render: function() {
+    var className = "editing";
+    var checked="";
+    if (this.props.complete) {
+      className = "editing completed";
+      checked="true";
+    }
+    return <li className={className} >
+        <div className="view" onDoubleClick={this.edit} ref="view">
+            <input className="toggle" type="checkbox" checked={checked} ref="changeCheck" onChange={this.changeItem}/>
+            <label> {this.props.todo.title} </label>
+            <button className="destroy" onClick={this.deleteTodo}> </button>
+        </div>
+        <input tyoe="text" className="edit" defaultValue={this.props.todo.title} ref="edit" onKeyUp={this.changeEdit}/>
+     </li>;
+  }
+})
+var TodoFooter=React.createClass({
+  all:function (e) {
+    this.refs.all.className="selected";
+    this.refs.active.className="";
+    this.refs.completed.className="";
+    this.props.changeStatus('all');
+  },
+  active:function (e) {
+    this.refs.all.className="";
+    this.refs.active.className="selected";
+    this.refs.completed.className="";
+    this.props.changeStatus('active');
+  },
+  completed:function (e) {
+    this.refs.all.className="";
+    this.refs.active.className="";
+    this.refs.completed.className="selected";
+    this.props.changeStatus('completed');
+  },
+  clear:function () {
+    this.props.changeStatus('clear');
+  },
+  render: function() {
+    return(
+       <footer className="footer">
+        <span className="todo-count">
+            <strong> {this.props.lefted} </strong> <span> </span> <span> items </span> <span> left </span>
+        </span>
+        <ul className="filters">
+            <li> <a href="#/" onClick={this.all} ref="all"> All </a> </li>
+            <li> <a href="#/active" onClick={this.active} ref="active"> Active </a> </li>
+            <li> <a href="#/completed" onClick={this.completed} ref="completed"> Completed </a> </li>
+        </ul>
+        <button className="clear-completed" onClick={this.clear}>
+            Clear completed
+        </button>
+      </footer>
+    );
+  }
+})
+/**
+ * render 到 DOM
+ * @type {String}
+ */
+ReactDOM.render(
+  <TodoList name="World" />,
+  document.getElementById('AppRoot')
+);
+</script>
+  </body>
+</html>
