@@ -21,6 +21,7 @@
     </footer>
     <script type="text/babel">
 var TodoList = React.createClass({
+
   getInitialState: function() {
       return {
         todos: [{
@@ -39,11 +40,19 @@ var TodoList = React.createClass({
         }
     };
   },
+  /**
+   * 添加待完成项
+   * @param {Object} newTodo 新的待完成项
+   */
   addTodoSubmit:function (newTodo) {
     this.setState({
       todos:this.state.todos.concat(newTodo)
     });
   },
+  /**
+   * 控制事项的状态 全部、待完成还是已完成，或者删除已完成的事项
+   * @param  {String} status 脚步的选择状态
+   */
   changeStatusSubmit:function (status) {
     switch (status) {
       case 'all':
@@ -85,6 +94,10 @@ var TodoList = React.createClass({
         break;
     }
   },
+  /**
+   * 改变选中事项的状态，从待完成到已完成或从已完成到待完成
+   * @param  {object} todo 被选中的事项
+   */
   changeItemSubmit:function (todo) {
     this.state.todos.map(function (item) {
       if(item===todo){
@@ -99,6 +112,10 @@ var TodoList = React.createClass({
       todos:this.state.todos ,
     });
   },
+  /**
+   * 删除选中的事项
+   * @param  {object} 被选中的事项
+   */
   deleteTodoSubmit:function (todo) {
     var that=this;
     this.state.todos.map(function (item,idx) {
@@ -110,6 +127,10 @@ var TodoList = React.createClass({
       todos:this.state.todos ,
     });
   },
+  /**
+   * 修改全部的事项状态
+   * @param  {Boolean} checked 点击的input的checked
+   */
   toggleChangeSubmit:function (checked) {
     if(checked){
       this.state.todos.map(function(todo,idx){
@@ -124,6 +145,10 @@ var TodoList = React.createClass({
       todos: this.state.todos,
     });
   },
+  /**
+   * 更新编辑的事项
+   * @param  {object} edit 被编辑的事项和编辑的值
+   */
   changeEditSubmit:function (edit) {
     var that=this;
     this.state.todos.map(function (todo,idx) {
@@ -148,6 +173,7 @@ var TodoList = React.createClass({
     );
   }
 });
+{/*TodoHeader组件*/}
 var TodoHeader=React.createClass({
   addTodo:function (event) {
     if(event.keyCode===13){
@@ -168,16 +194,33 @@ var TodoHeader=React.createClass({
     );
   }
 })
+{/*TodoSection组件*/}
 var TodoSection=React.createClass({
+  /**
+   * 改变选中事项的状态，从待完成到已完成或从已完成到待完成
+   * @param  {object} todo 被选中的事项
+   */
   changeItemSubmit:function (todo) {
     this.props.changeItemSubmit(todo);
   },
+  /**
+   * 删除选中的事项
+   * @param  {object} 被选中的事项
+   */
   deleteTodoSubmit:function (todo) {
     this.props.deleteTodoSubmit(todo);
   },
+   /**
+   * 修改全部的事项状态
+   * @param  {Boolean} checked 点击的input的checked
+   */
   toggleChange:function (e) {
     this.props.toggleChangeSubmit(e.target.checked);
   },
+   /**
+   * 更新编辑的事项
+   * @param  {object} edit 被编辑的事项和编辑的值
+   */
   changeEditSubmit:function (edit) {
     this.props.changeEditSubmit(edit);
   },
@@ -204,18 +247,34 @@ var TodoSection=React.createClass({
     );
   }
 });
+{/*TodoItem组件*/}
 var TodoItem=React.createClass({
+  /**
+   * 改变选中事项的状态，从待完成到已完成或从已完成到待完成
+   * @param  {object} todo 被选中的事项
+   */
   changeItem:function (e) {
     this.props.changeItemSubmit((this.props.todo));
   },
+   /**
+   * 删除选中的事项
+   * @param  {object} 被选中的事项
+   */
   deleteTodo:function (e) {
     this.props.deleteTodoSubmit((this.props.todo));
   },
+  /*
+   切换非编辑状态为编辑状态
+   */
   edit:function (e) {
     this.refs.view.style.display="none";
     this.refs.edit.style.display="block";
     this.refs.edit.focus();
   },
+   /**
+   * 更新编辑的事项
+   * @param  {object} edit 被编辑的事项和编辑的值
+   */
   changeEdit:function (e) {
     var that=this;
     if(e.keyCode===13){
@@ -244,26 +303,39 @@ var TodoItem=React.createClass({
         <input tyoe="text" className="edit" defaultValue={this.props.todo.title} ref="edit" onKeyUp={this.changeEdit}/>
      </li>;
   }
-})
+});
+{/*TodoFooter组件*/}
 var TodoFooter=React.createClass({
+  /*
+  脚步控件状态为all
+   */
   all:function (e) {
     this.refs.all.className="selected";
     this.refs.active.className="";
     this.refs.completed.className="";
     this.props.changeStatus('all');
   },
+   /*
+  脚步控件状态为active
+   */
   active:function (e) {
     this.refs.all.className="";
     this.refs.active.className="selected";
     this.refs.completed.className="";
     this.props.changeStatus('active');
   },
+   /*
+  脚步控件状态为completed
+   */
   completed:function (e) {
     this.refs.all.className="";
     this.refs.active.className="";
     this.refs.completed.className="selected";
     this.props.changeStatus('completed');
   },
+  /*
+  清楚已完成的事项
+   */
   clear:function () {
     this.props.changeStatus('clear');
   },
