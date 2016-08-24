@@ -11,6 +11,7 @@
 --基于React的简历小管家
 ### todos
 --用 React JSX 的方式渲染出 [TODOMVC](http://todomvc.com/examples/react/#/) 页面
-
+### todoMVC
+-- todos 的非测试增强版，以MVC的形势构件todos，每个组件都小而精
 
 
