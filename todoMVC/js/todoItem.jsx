@@ -1,6 +1,7 @@
+/*global React, Router,classNames*/
 var app=app||{};
 (function  () {
-  'use strict'
+  'use strict';
 
   var ENTER_KEY=13;
   var ESCAPE_KEY=27;

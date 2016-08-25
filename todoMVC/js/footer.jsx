@@ -1,3 +1,4 @@
+/*global React, Router, classNames*/
 var app = app||{};
 
 (function () {

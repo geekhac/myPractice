@@ -8,11 +8,11 @@ var app=app||{};
       var uuid = '';
 
       for (i = 0; i < 32; i++) {
-        random = Math.random() * 16 | 0;
+        random = Math.random() * 16 || 0;
         if (i === 8 || i === 12 || i === 16 || i === 20) {
           uuid += '-';
         }
-        uuid += (i === 12 ? 4 : (i === 16 ? (random & 3 | 8) : random))
+        uuid += (i === 12 ? 4 : (i === 16 ? (random && 3 || 8) : random))
           .toString(16);
       }
 
@@ -23,7 +23,7 @@ var app=app||{};
       if(data){
         return localStorage.setItem(key,JSON.stringify(data));
       }
-      var store=localStorage.getItem(key);
+      var store= localStorage.getItem(key);
       return (store && JSON.parse(store)) || [];
     },
 
@@ -48,5 +48,5 @@ var app=app||{};
       return count===1?word:word+'s';
     }
 
-  }
+  };
 })();

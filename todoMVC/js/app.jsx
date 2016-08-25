@@ -1,6 +1,7 @@
+/*global React, Router*/
 var app=app||{};
 (function () {
-  'use strict'
+  'use strict';
 
   var ENTER_KEY=13;
 
@@ -74,7 +75,7 @@ var app=app||{};
 
     componentDidMount: function() {
       var setState=this.setState;
-      var router=Router({
+      var router=new Router({
         '/' : setState.bind(this,{nowShowing:app.ALL_TODOS}),
         '/active' : setState.bind(this,{nowShowing:app.ACTIVE_TODOS}),
         '/completed': setState.bind(this,{nowShowing:app.COMPLETED_TODOS}),
@@ -105,7 +106,7 @@ var app=app||{};
           default:
             return true;
         }
-      },this)
+      },this);
 
       var todoItems=showTodos.map(function(todo) {
         return (
@@ -120,14 +121,14 @@ var app=app||{};
             onDestroy={this.destroy.bind(this,todo)}
             onSave={this.save.bind(this,todo)}
           />
-        )
+        );
       },this);
 
       var todoList=(
           <ul className="todo-list">
             {todoItems}
           </ul>
-      )
+      );
 
       if(todos.length){
         main=(
@@ -150,7 +151,7 @@ var app=app||{};
             completedCount={completedTodoCount}
             clearCompleted={this.clearCompleted}
           />
-        )
+        );
       }
 
       return (
